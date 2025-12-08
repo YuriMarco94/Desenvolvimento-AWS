@@ -1,0 +1,17 @@
+name: Main Pipeline
+
+on:
+  push:
+    branches: [ homol ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    uses: embracon-br/pipeline-templates/.github/workflows/DeployNodeAzureWebApp-Oficial-v1.yml@main
+    secrets: inherit
+    with:
+      build-id: ${{ github.run_id }}
+      environment: hom ## ajustar de acordo com a app
+      namespace: hom ## ajustar de acordo com a app
+      project: arearestrita-front ## ajustar de acordo com a app
+      registry: azrsrvpcrg01.azurecr.io ## ajustar de acordo com a app
