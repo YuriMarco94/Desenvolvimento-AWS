@@ -1,4 +1,4 @@
-name: Main Pipeline
+name: Desenvolvimento-AWS
 
 on:
   push:
@@ -7,11 +7,26 @@ on:
 
 jobs:
   build:
-    uses: embracon-br/pipeline-templates/.github/workflows/DeployNodeAzureWebApp-Oficial-v1.yml@main
+    uses: YuriMarco94/pipeline-templates/.github/workflows/build-template-aws.yml@master
     secrets: inherit
     with:
       build-id: ${{ github.run_id }}
-      environment: dev ## ajustar de acordo com a app
-      namespace: dev ## ajustar de acordo com a app
-      project: arearestrita-front ## ajustar de acordo com a app
-      registry: azrsrvpcrg01.azurecr.io ## ajustar de acordo com a app
+      environment: dev
+      namespace: demo
+      project: Desenvolvimento-AWS
+      registry: ${{ vars.ECR_REGISTRY }}
+      aws-region: ${{ vars.AWS_REGION }}
+      dockerfile-path: Dockerfile
+      context: .
+      version-prefix: "0.0"
+
+  deploy:
+    needs: build
+    uses: YuriMarco94/pipeline-templates/.github/workflows/deploy-template-eks.yml@master
+    secrets: inherit
+    with:
+      environment: dev
+      namespace: demo
+      aws-region: ${{ vars.AWS_REGION }}
+      eks-cluster-name: ${{ vars.EKS_CLUSTER_NAME }}
+      manifest-path: kubernetes/manifests
