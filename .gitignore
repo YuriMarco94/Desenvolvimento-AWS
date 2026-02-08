@@ -1,0 +1,39 @@
+# ===== Terraform =====
+**/.terraform/*
+**/.terraform.lock.hcl
+*.tfstate
+*.tfstate.*
+crash.log
+crash.*.log
+*.tfvars
+!terraform/envs/**/terraform.tfvars
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Plan files
+*.tfplan
+
+# ===== Terragrunt (se usar no futuro) =====
+.terragrunt-cache/
+
+# ===== Kubernetes =====
+*.kubeconfig
+
+# ===== OS / Editor =====
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+*.swp
+
+# ===== Logs =====
+*.log
+
+# ===== Secrets =====
+.env
+.env.*
+secrets*.yaml
