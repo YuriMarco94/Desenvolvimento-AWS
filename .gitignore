@@ -1,12 +1,15 @@
 # ===== Terraform =====
-**/.terraform/*
+**/.terraform/**
 **/.terraform.lock.hcl
 *.tfstate
 *.tfstate.*
 crash.log
 crash.*.log
+
+# Atenção: geralmente NÃO se comita tfvars (pode conter segredo)
 *.tfvars
 !terraform/envs/**/terraform.tfvars
+
 override.tf
 override.tf.json
 *_override.tf
@@ -14,6 +17,9 @@ override.tf.json
 
 # Plan files
 *.tfplan
+
+# Terraform providers (evitar binários no repo)
+**/terraform-provider-*.exe
 
 # ===== Terragrunt (se usar no futuro) =====
 .terragrunt-cache/

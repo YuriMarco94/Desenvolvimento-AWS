@@ -31,11 +31,34 @@ module "network" {
   env    = "dev"
   region = "us-east-1"
 
-  vpc_cidr                 = "10.10.0.0/16"
-  az_count                 = 2
-  enable_nat_gateway       = true
-  single_nat_gateway       = true
+  vpc_cidr           = "10.10.0.0/16"
+  az_count           = 2
+  enable_nat_gateway = true
+  single_nat_gateway = true
 
-  enable_s3_endpoint       = true
+  enable_s3_endpoint         = true
   enable_interface_endpoints = false
+}
+
+module "eks" {
+  source = "../../modules/eks"
+
+  org    = "yurim"
+  app    = "aws-platform"
+  env    = "dev"
+  region = "us-east-1"
+
+  vpc_id             = module.network.vpc_id
+  private_subnet_ids = module.network.private_subnet_ids
+  public_subnet_ids  = module.network.public_subnet_ids
+
+  cluster_version = "1.35"
+
+  cluster_endpoint_public_access  = true
+  cluster_endpoint_private_access = true
+
+  node_instance_types = ["t3a.small"]
+  node_desired_size   = 2
+  node_min_size       = 2
+  node_max_size       = 3
 }
