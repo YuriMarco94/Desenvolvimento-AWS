@@ -1,12 +1,15 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: demo
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: echo
   namespace: demo
-  labels:
-    app: echo
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: echo
@@ -19,20 +22,39 @@ spec:
         - name: echo
           image: ealen/echo-server:latest
           ports:
-            - name: http
-              containerPort: 80
+            - containerPort: 80
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: echo
   namespace: demo
-  labels:
-    app: echo
 spec:
   selector:
     app: echo
   ports:
-    - name: http
-      port: 80
+    - port: 80
       targetPort: 80
+  type: ClusterIP
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: echo
+  namespace: demo
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}]'
+spec:
+  ingressClassName: alb
+  rules:
+    - http:
+        paths:
+          - path: /echo
+            pathType: Prefix
+            backend:
+              service:
+                name: echo
+                port:
+                  number: 80
