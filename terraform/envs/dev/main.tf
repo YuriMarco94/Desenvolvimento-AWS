@@ -1,6 +1,6 @@
 terraform {
   backend "s3" {
-    bucket         = "yurim-aws-platform-us-east-1-tfstate-0dc5ad"
+    bucket         = "yurim-aws-platform-us-east-1-tfstate-3f67c8"
     key            = "env/dev/terraform.tfstate"
     region         = "us-east-1"
     dynamodb_table = "yurim-aws-platform-us-east-1-tflock"
@@ -58,7 +58,13 @@ module "eks" {
   cluster_endpoint_private_access = true
 
   node_instance_types = ["t3a.small"]
-  node_desired_size   = 2
-  node_min_size       = 2
-  node_max_size       = 3
+  node_desired_size   = 8
+  node_min_size       = 8
+  node_max_size       = 8
 }
+
+output "vpc_id" { value = module.network.vpc_id }
+output "public_subnet_ids" { value = module.network.public_subnet_ids }
+output "private_subnet_ids" { value = module.network.private_subnet_ids }
+output "eks_cluster_name" { value = module.eks.cluster_name }
+

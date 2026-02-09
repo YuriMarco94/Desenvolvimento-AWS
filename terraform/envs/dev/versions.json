@@ -1,0 +1,52 @@
+{
+    "Objects": [
+        {
+            "Key": "env/dev/terraform.tfstate",
+            "VersionId": "MxjMh7I8t1r6iSd6r_j_LFUiDoWcdZmR"
+        },
+        {
+            "Key": "env/dev/terraform.tfstate",
+            "VersionId": "jWVYhexofyyws_aGoIaDXF.QGZhxjf0f"
+        },
+        {
+            "Key": "env/dev/terraform.tfstate",
+            "VersionId": "jGQjVSkz6p8DpAwLnbWK1CJbhdrGgcXN"
+        },
+        {
+            "Key": "env/dev/terraform.tfstate",
+            "VersionId": "WjD1fiY8EYJhCN0SPtv2oazDTKdf_ITR"
+        },
+        {
+            "Key": "env/dev/terraform.tfstate",
+            "VersionId": "I.cwL4lfe4XY46QQkvyTVCIgR37i8lZO"
+        },
+        {
+            "Key": "env/dev/terraform.tfstate",
+            "VersionId": "qbAordF.kNYjkb.7EOnI2qYs9g6gUCzj"
+        },
+        {
+            "Key": "env/dev/terraform.tfstate",
+            "VersionId": "4yzAygZECQE1L2gqzq7jJJTJt5OutwPR"
+        },
+        {
+            "Key": "env/dev/terraform.tfstate",
+            "VersionId": "274JFSRRss2BHVicLUG_6sgCpsHpthmY"
+        },
+        {
+            "Key": "env/dev/terraform.tfstate",
+            "VersionId": "lCf0SLQ34_3t8ljU7VXXOgOe4LZYnZkK"
+        },
+        {
+            "Key": "env/dev/terraform.tfstate",
+            "VersionId": "jEY0DmDO1j59L8F4J.XG9KLsUYfceZdF"
+        },
+        {
+            "Key": "env/dev/terraform.tfstate",
+            "VersionId": "NYFHOeOe4cXzr4MCJfEF27BN7JWSKCqi"
+        },
+        {
+            "Key": "env/dev/terraform.tfstate",
+            "VersionId": "x7fpdMBe43BPDL3bmxV0F0GA0sDtWbhD"
+        }
+    ]
+}
