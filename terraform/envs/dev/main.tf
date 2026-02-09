@@ -57,7 +57,7 @@ module "eks" {
   cluster_endpoint_public_access  = true
   cluster_endpoint_private_access = true
 
-  node_instance_types = ["t3a.small"]
+  node_instance_types = ["t3a.large"]
   node_desired_size   = 8
   node_min_size       = 8
   node_max_size       = 8
