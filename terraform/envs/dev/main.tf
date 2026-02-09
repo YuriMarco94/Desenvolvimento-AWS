@@ -8,41 +8,44 @@ terraform {
   }
 }
 
-############################################
-# Locals (para usar local.* nos módulos)
-############################################
-locals {
-  name        = "yurim-aws-platform"
-  environment = "dev"
-  region      = "us-east-1"
-
-  tags = {
-    Org        = "yurim"
-    App        = "aws-platform"
-    Env        = "dev"
-    ManagedBy  = "Terraform"
-    CostCenter = "interview-demo"
-    Owner      = "Yuri"
-  }
-}
-
 provider "aws" {
-  region = local.region
+  region = "us-east-1"
 
   default_tags {
-    tags = local.tags
+    tags = {
+      Org        = "yurim"
+      App        = "aws-platform"
+      Env        = "dev"
+      ManagedBy  = "Terraform"
+      CostCenter = "interview-demo"
+      Owner      = "Yuri"
+    }
   }
 }
 
-############################################
-# Network
-############################################
+locals {
+  org    = "yurim"
+  app    = "aws-platform"
+  env    = "dev"
+  region = "us-east-1"
+
+  tags = {
+    Org         = local.org
+    App         = local.app
+    Env         = local.env
+    ManagedBy   = "Terraform"
+    CostCenter  = "interview-demo"
+    Owner       = "Yuri"
+    Environment = local.env
+  }
+}
+
 module "network" {
   source = "../../modules/network"
 
-  org    = "yurim"
-  app    = "aws-platform"
-  env    = local.environment
+  org    = local.org
+  app    = local.app
+  env    = local.env
   region = local.region
 
   vpc_cidr           = "10.10.0.0/16"
@@ -54,15 +57,12 @@ module "network" {
   enable_interface_endpoints = false
 }
 
-############################################
-# EKS
-############################################
 module "eks" {
   source = "../../modules/eks"
 
-  org    = "yurim"
-  app    = "aws-platform"
-  env    = local.environment
+  org    = local.org
+  app    = local.app
+  env    = local.env
   region = local.region
 
   vpc_id             = module.network.vpc_id
@@ -81,11 +81,81 @@ module "eks" {
 }
 
 ############################
-# Security Baseline
+# Security Baseline (AWS)
 ############################
 module "security_baseline" {
-  source      = "../../modules/security_baseline"
-  environment = local.environment
+  source = "../../modules/security_baseline"
+
+  org    = local.org
+  app    = local.app
+  env    = local.env
+  region = local.region
+
+  enable_securityhub           = true
+  enable_securityhub_standards = false
+  enable_guardduty             = true
+  enable_access_analyzer       = true
+  enable_inspector2            = true
+
+  tags = local.tags
+}
+
+############################
+# ECR
+############################
+module "ecr" {
+  source = "../../modules/ecr"
+
+  org    = local.org
+  app    = local.app
+  env    = local.env
+  region = local.region
+
+  repository_name     = "app"
+  scan_on_push        = true
+  lifecycle_keep_last = 30
+  force_delete        = true
+
+  tags = local.tags
+}
+
+############################
+# GitHub OIDC Role (CI/CD)
+############################
+module "cicd_github" {
+  source = "../../modules/cicd_github"
+
+  org    = local.org
+  app    = local.app
+  env    = local.env
+  region = local.region
+
+  github_owner  = "YuriMarco94"
+  github_repo   = "Desenvolvimento-AWS"
+  github_branch = "develop"
+
+  ecr_repository_arn = module.ecr.repository_arn
+  eks_cluster_name   = module.eks.cluster_name
+
+  tags = local.tags
+}
+
+############################
+# Edge: CloudFront + WAF + ALB (demo OK)
+############################
+module "edge" {
+  source = "../../modules/edge"
+
+  org    = local.org
+  app    = local.app
+  env    = local.env
+  region = local.region
+
+  vpc_id            = module.network.vpc_id
+  public_subnet_ids = module.network.public_subnet_ids
+
+  # deixa vazio se não for usar domínio agora
+  custom_domain = ""
 
   tags = local.tags
 }
@@ -94,15 +164,15 @@ module "security_baseline" {
 # S3 (private)
 ############################
 module "s3" {
-  source      = "../../modules/s3"
-  name        = local.name
-  environment = local.environment
+  source = "../../modules/s3"
 
-  bucket_name       = "${local.name}-${local.environment}-${local.region}-apps"
+  name        = "${local.org}-${local.app}"
+  environment = local.env
+
+  bucket_name       = "${local.org}-${local.app}-${local.env}-${local.region}-apps"
   force_destroy     = true
   enable_versioning = true
 
-  # Se existir output do VPCE do S3 no module.network, restringe via policy
   vpc_endpoint_id = try(module.network.s3_vpc_endpoint_id, null)
 
   tags = local.tags
@@ -113,14 +183,14 @@ module "s3" {
 ############################
 module "rds" {
   source      = "../../modules/rds"
-  name        = local.name
-  environment = local.environment
+  name        = "${local.org}-${local.app}"
+  environment = local.env
   region      = local.region
 
   vpc_id             = module.network.vpc_id
   private_subnet_ids = module.network.private_subnet_ids
 
-  # ✅ Libera acesso ao Postgres SOMENTE dos nodes do EKS
+  # libera do SG dos nodes do EKS
   allowed_security_group_ids = [module.eks.node_security_group_id]
 
   db_name           = "app"
@@ -129,26 +199,4 @@ module "rds" {
   multi_az          = false
 
   tags = local.tags
-
-  # Opcional, mas deixa explícito
-  depends_on = [module.eks]
-}
-
-############################################
-# Outputs
-############################################
-output "vpc_id" {
-  value = module.network.vpc_id
-}
-
-output "public_subnet_ids" {
-  value = module.network.public_subnet_ids
-}
-
-output "private_subnet_ids" {
-  value = module.network.private_subnet_ids
-}
-
-output "eks_cluster_name" {
-  value = module.eks.cluster_name
 }

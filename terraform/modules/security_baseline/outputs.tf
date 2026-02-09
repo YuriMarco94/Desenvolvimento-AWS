@@ -1,4 +1,7 @@
-output "guardduty_detector_id" {
-  value       = aws_guardduty_detector.this.id
-  description = "GuardDuty detector ID"
+output "securityhub_enabled" {
+  value = var.enable_securityhub
+}
+
+output "guardduty_enabled" {
+  value = var.enable_guardduty
 }
