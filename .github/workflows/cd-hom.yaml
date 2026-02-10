@@ -2,8 +2,7 @@ name: CD Hom
 
 on:
   push:
-    branches: ["hom"]
-  workflow_dispatch:
+    branches: ["homol"]
 
 jobs:
   build:
