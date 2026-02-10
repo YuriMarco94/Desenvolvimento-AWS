@@ -2,13 +2,17 @@ name: CD Prod
 
 on:
   push:
-    branches: ["master"]
+    branches: [ "master" ]
   workflow_dispatch:
+
+concurrency:
+  group: cd-prod
+  cancel-in-progress: true
 
 jobs:
   build:
+    name: Build (PROD)
     uses: YuriMarco94/pipeline-templates/.github/workflows/build-template-aws.yml@master
-    secrets: inherit
     with:
       environment: prod
       project: org-app
@@ -17,14 +21,16 @@ jobs:
       dockerfile-path: Dockerfile
       context: .
       version-prefix: "1.0"
+    secrets: inherit
 
   deploy:
+    name: Deploy (PROD)
     needs: build
     uses: YuriMarco94/pipeline-templates/.github/workflows/deploy-template-eks.yml@master
-    secrets: inherit
     with:
       aws-region: us-east-1
       eks-cluster-name: yurim-aws-platform-dev-us-east-1-eks
       namespace: prod
       manifest-path: k8s/apps/namespaces/prod/
       image: ${{ needs.build.outputs.image }}
+    secrets: inherit

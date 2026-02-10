@@ -2,13 +2,17 @@ name: CD Dev
 
 on:
   push:
-    branches: ["develop"]
+    branches: [ "develop" ]
   workflow_dispatch:
+
+concurrency:
+  group: cd-dev
+  cancel-in-progress: true
 
 jobs:
   build:
+    name: Build (DEV)
     uses: YuriMarco94/pipeline-templates/.github/workflows/build-template-aws.yml@master
-    secrets: inherit
     with:
       environment: dev
       project: org-app
@@ -17,14 +21,16 @@ jobs:
       dockerfile-path: Dockerfile
       context: .
       version-prefix: "0.0"
+    secrets: inherit
 
   deploy:
+    name: Deploy (DEV)
     needs: build
     uses: YuriMarco94/pipeline-templates/.github/workflows/deploy-template-eks.yml@master
-    secrets: inherit
     with:
       aws-region: us-east-1
       eks-cluster-name: yurim-aws-platform-dev-us-east-1-eks
       namespace: dev
       manifest-path: k8s/apps/namespaces/dev/
       image: ${{ needs.build.outputs.image }}
+    secrets: inherit

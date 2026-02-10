@@ -2,12 +2,17 @@ name: CD Hom
 
 on:
   push:
-    branches: ["homol"]
+    branches: [ "homol" ]
+  workflow_dispatch:
+
+concurrency:
+  group: cd-hom
+  cancel-in-progress: true
 
 jobs:
   build:
+    name: Build (HOM)
     uses: YuriMarco94/pipeline-templates/.github/workflows/build-template-aws.yml@master
-    secrets: inherit
     with:
       environment: hom
       project: org-app
@@ -16,14 +21,16 @@ jobs:
       dockerfile-path: Dockerfile
       context: .
       version-prefix: "0.0"
+    secrets: inherit
 
   deploy:
+    name: Deploy (HOM)
     needs: build
     uses: YuriMarco94/pipeline-templates/.github/workflows/deploy-template-eks.yml@master
-    secrets: inherit
     with:
       aws-region: us-east-1
       eks-cluster-name: yurim-aws-platform-dev-us-east-1-eks
       namespace: hom
       manifest-path: k8s/apps/namespaces/hom/
       image: ${{ needs.build.outputs.image }}
+    secrets: inherit
