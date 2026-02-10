@@ -7,12 +7,8 @@ on:
 
 jobs:
   build:
-<<<<<<< HEAD
     uses: YuriMarco94/pipeline-templates/.github/workflows/build-template-aws.yml@master
     secrets: inherit
-=======
-    uses: YuriMarco94/pipeline-templates/.github/workflows/build-template-aws.yml@main
->>>>>>> 830827c (Ajustes DEV)
     with:
       environment: dev
       project: org-app
@@ -27,7 +23,7 @@ jobs:
 
   deploy:
     needs: build
-    uses: YuriMarco94/pipeline-templates/.github/workflows/deploy-template-eks.yml@main
+    uses: YuriMarco94/pipeline-templates/.github/workflows/deploy-template-eks.yml@master
     with:
       aws-region: us-east-1
       eks-cluster-name: yurim-aws-platform-dev-us-east-1-eks
