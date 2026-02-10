@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AWS EKS Platform - Arquitetura</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:true});</script>
+</head>
+<body>
+    <h1>AWS EKS Platform - Diagramas de Arquitetura</h1>
+    
+    <h2>Arquitetura da Plataforma</h2>
+    <div class="mermaid">
+    graph TB
+        subgraph "Infraestrutura AWS"
+            VPC[VPC com 3 AZs]
+            EKS[Cluster EKS v1.35]
+            ALB[Application Load Balancer]
+            ECR[ECR Registry]
+            RDS[RDS PostgreSQL]
+        end
+        
+        subgraph "Kubernetes Platform"
+            GatewayAPI[Gateway API + Envoy]
+            Apps[Applications<br/>dev/hom/prod]
+            Monitoring[Monitoring Stack<br/>Prometheus/Grafana]
+            Dashboard[Kubernetes Dashboard]
+            Autoscaler[Cluster Autoscaler]
+        end
+        
+        subgraph "CI/CD Pipeline"
+            GitHub[GitHub Actions]
+            OIDC[AWS OIDC]
+            SecurityScan[Security Scanning]
+            Deploy[Deployment Automation]
+        end
+        
+        subgraph "Governança"
+            Terraform[Terraform Modules]
+            Policies[Security Policies]
+            Budgets[FinOps Budgets]
+            Tagging[Resource Tagging]
+        end
+        
+        VPC --> EKS
+        EKS --> GatewayAPI
+        EKS --> Apps
+        EKS --> Monitoring
+        EKS --> Dashboard
+        
+        GitHub --> OIDC --> EKS
+        GitHub --> SecurityScan --> ECR
+        GitHub --> Deploy --> Apps
+        
+        Terraform --> VPC
+        Terraform --> EKS
+        Terraform --> ALB
+        Policies --> EKS
+        Budgets --> VPC
+        Tagging --> ALL[All Resources]
+    </div>
+</body>
+</html>
