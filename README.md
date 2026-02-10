@@ -1,4 +1,4 @@
-# AWS EKS Platform - Plataforma de Desenvolvimento em Kubernetes
+# AWS EKS Platform - Plataforma de Desenvolvimento em Kubernetes 
 
 Este projeto foi criado como um projeto demonstrativo para a vaga de DevOps no Grupo Boticário. O objetivo é apresentar minhas habilidades.
 
@@ -46,4 +46,5 @@ AWS EKS Platform é uma solução completa de Infraestrutura como Código para p
 
 
 <img width="400" height="546" alt="image" src="https://github.com/user-attachments/assets/d1d13ee6-133b-49c0-b5cf-a6f99eb0ac68" />
+
 
