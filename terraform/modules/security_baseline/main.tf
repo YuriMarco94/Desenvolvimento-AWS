@@ -14,7 +14,6 @@ resource "aws_securityhub_account" "this" {
   enable_default_standards = true
 }
 
-# Deixa opcional (pra não quebrar de novo)
 resource "aws_securityhub_standards_subscription" "aws_foundational" {
   count        = var.enable_securityhub_standards ? 1 : 0
   standards_arn = "arn:aws:securityhub:::standards/aws-foundational-security-best-practices/v/1.0.0"
