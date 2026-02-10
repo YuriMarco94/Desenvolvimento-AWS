@@ -2,17 +2,13 @@ name: CD Dev
 
 on:
   push:
-    branches: [ "develop" ]
+    branches: ["develop"]
   workflow_dispatch:
 
 jobs:
   build:
-<<<<<<< HEAD
     uses: YuriMarco94/pipeline-templates/.github/workflows/build-template-aws.yml@master
     secrets: inherit
-=======
-    uses: YuriMarco94/pipeline-templates/.github/workflows/build-template-aws.yml@main
->>>>>>> 830827c (Ajustes DEV)
     with:
       environment: dev
       project: org-app
@@ -21,19 +17,14 @@ jobs:
       dockerfile-path: Dockerfile
       context: .
       version-prefix: "0.0"
-    secrets:
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
   deploy:
     needs: build
-    uses: YuriMarco94/pipeline-templates/.github/workflows/deploy-template-eks.yml@main
+    uses: YuriMarco94/pipeline-templates/.github/workflows/deploy-template-eks.yml@master
+    secrets: inherit
     with:
       aws-region: us-east-1
       eks-cluster-name: yurim-aws-platform-dev-us-east-1-eks
       namespace: dev
       manifest-path: k8s/apps/namespaces/dev/
       image: ${{ needs.build.outputs.image }}
-    secrets:
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
