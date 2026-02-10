@@ -19,9 +19,12 @@ spec:
     spec:
       containers:
         - name: echo
-          image: ealen/echo-server:0.6.0
+          image: 597088058179.dkr.ecr.us-east-1.amazonaws.com/org-app:hom-latest
           ports:
             - containerPort: 80
+          env:
+            - name: ENVIRONMENT
+              value: "hom"
 ---
 apiVersion: v1
 kind: Service
@@ -45,7 +48,6 @@ metadata:
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ip
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}]'
-    alb.ingress.kubernetes.io/subnets: subnet-0d2c14439d0dc06c6,subnet-0b7b9e3ad1e2c9924
 spec:
   ingressClassName: alb
   rules:

@@ -4,4 +4,4 @@ metadata:
   name: dev
   labels:
     environment: development
-    managed-by: terraform
+    managed-by: github-actions

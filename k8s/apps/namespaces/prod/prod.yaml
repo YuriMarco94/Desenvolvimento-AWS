@@ -3,5 +3,5 @@ kind: Namespace
 metadata:
   name: prod
   labels:
-    environment: development
-    managed-by: terraform
+    environment: production
+    managed-by: github-actions

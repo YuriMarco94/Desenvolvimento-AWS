@@ -19,16 +19,12 @@ spec:
     spec:
       containers:
         - name: echo
-          image: ealen/echo-server:0.6.0
+          image: 597088058179.dkr.ecr.us-east-1.amazonaws.com/org-app:prod-latest
           ports:
             - containerPort: 80
-          resources:
-            requests:
-              memory: "64Mi"
-              cpu: "100m"
-            limits:
-              memory: "128Mi"
-              cpu: "200m"
+          env:
+            - name: ENVIRONMENT
+              value: "prod"
 ---
 apiVersion: v1
 kind: Service
@@ -51,11 +47,7 @@ metadata:
   annotations:
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ip
-    alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}]'
-    alb.ingress.kubernetes.io/ssl-policy: ELBSecurityPolicy-TLS13-1-2-2021-06
-    alb.ingress.kubernetes.io/subnets: subnet-0d2c14439d0dc06c6,subnet-0b7b9e3ad1e2c9924
-    # Para certificado, descomente e ajuste:
-    # alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-1:597088058179:certificate/SEU-CERTIFICADO-AQUI
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}]'
 spec:
   ingressClassName: alb
   rules:
