@@ -1,5 +1,7 @@
 AWS EKS Platform - Plataforma de Desenvolvimento em Kubernetes
 
+Este projeto foi criado como um projeto demonstrativo para a vaga de DevOps no Grupo Boticário. O objetivo é apresentar minhas habilidades
+
 
 
 <img width="1911" height="678" alt="image" src="https://github.com/user-attachments/assets/e4aba8b2-36b1-4cf8-b846-cd800a1c6980" />
@@ -39,15 +41,3 @@ AWS EKS Platform é uma solução completa de Infraestrutura como Código para p
 
 
 <img width="400" height="546" alt="image" src="https://github.com/user-attachments/assets/d1d13ee6-133b-49c0-b5cf-a6f99eb0ac68" />
-
-foreach ($ns in @("dev", "hom", "prod")) {
-    Write-Host "`n=== NAMESPACE: $ns ===" -ForegroundColor Green
-    Write-Host "Pods:" -ForegroundColor Yellow
-    kubectl get pods -n $ns 2>$null
-    
-    Write-Host "`nServices:" -ForegroundColor Yellow
-    kubectl get svc -n $ns 2>$null
-    
-    Write-Host "`nIngress:" -ForegroundColor Yellow
-    kubectl get ingress -n $ns 2>$null
-}
