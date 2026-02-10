@@ -1,4 +1,4 @@
-# Desenvolvimento-AWS (EKS Platform Demo)
+# Desenvolvimento-AWS (EKS Platform Demo) 
 
 Projeto de demonstração (nível sênior) para provisionar e operar uma plataforma Kubernetes na AWS com foco em:
 - Terraform (IaC) com módulos e governança
