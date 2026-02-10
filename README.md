@@ -1,9 +1,12 @@
 AWS EKS Platform - Plataforma de Desenvolvimento em Kubernetes
 
+
+
 <img width="1911" height="678" alt="image" src="https://github.com/user-attachments/assets/e4aba8b2-36b1-4cf8-b846-cd800a1c6980" />
 
 
 📋 Visão Geral
+
 AWS EKS Platform é uma solução completa de Infraestrutura como Código para provisionar e operar clusters Kubernetes na AWS com CI/CD automatizado, segurança nativa e observabilidade integrada.
 
 🔗 Links Importantes:
@@ -37,22 +40,14 @@ AWS EKS Platform é uma solução completa de Infraestrutura como Código para p
 
 <img width="400" height="546" alt="image" src="https://github.com/user-attachments/assets/d1d13ee6-133b-49c0-b5cf-a6f99eb0ac68" />
 
-
-Comandos para verificar:
-# Verificar todos os ambientes
-kubectl get pods -n dev
-kubectl get pods -n hom  
-kubectl get pods -n prod
-
-# Verificar serviços
-kubectl get svc -n dev echo
-kubectl get svc -n hom echo
-kubectl get svc -n prod echo
-
-# Verificar ingress
-kubectl get ingress -A | grep echo
-
-
-
-
-
+foreach ($ns in @("dev", "hom", "prod")) {
+    Write-Host "`n=== NAMESPACE: $ns ===" -ForegroundColor Green
+    Write-Host "Pods:" -ForegroundColor Yellow
+    kubectl get pods -n $ns 2>$null
+    
+    Write-Host "`nServices:" -ForegroundColor Yellow
+    kubectl get svc -n $ns 2>$null
+    
+    Write-Host "`nIngress:" -ForegroundColor Yellow
+    kubectl get ingress -n $ns 2>$null
+}
