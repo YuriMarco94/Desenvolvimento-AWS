@@ -1,31 +1,32 @@
-name: CD - PROD
+name: CD Prod
 
 on:
   push:
-    branches: ["prod"]
+    branches: ["master"]
+  workflow_dispatch:
 
 jobs:
   build:
-    uses: YuriMarco94/pipeline-templates/.github/workflows/build-template-aws.yml@master
+    uses: YuriMarco94/pipeline-templates/.github/workflows/build-template-aws.yml@main
     secrets: inherit
     with:
-      build-id: ${{ github.run_id }}
       environment: prod
-      namespace: prod
-      project: app
-      registry: 597088058179.dkr.ecr.us-east-1.amazonaws.com
       aws-region: us-east-1
+      ecr-repository: org-app
       dockerfile-path: Dockerfile
       context: .
-      version-prefix: "1.0"
+      tag-strategy: sha
 
   deploy:
-    needs: build
-    uses: YuriMarco94/pipeline-templates/.github/workflows/deploy-template-eks.yml@master
+    needs: [build]
+    uses: YuriMarco94/pipeline-templates/.github/workflows/deploy-template-eks.yml@main
     secrets: inherit
     with:
-      environment: prod
-      namespace: prod
       aws-region: us-east-1
       eks-cluster-name: yurim-aws-platform-dev-us-east-1-eks
-      manifest-path: k8s/apps/prod
+      manifest-path: k8s/apps/namespaces/prod/
+      namespace: prod
+      deployment-name: echo
+      container-name: echo
+      image-uri: ${{ needs.build.outputs.image-uri }}
+      rollout-timeout: 240s
