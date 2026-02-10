@@ -1,17 +1,20 @@
-name: CD Dev
+name: 🚀 CD Dev
 
 on:
   push:
-    branches: [ "develop" ]
+    branches: ["develop"]
   workflow_dispatch:
 
 concurrency:
-  group: cd-dev
+  group: cd-dev-${{ github.ref }}
   cancel-in-progress: true
+
+permissions:
+  contents: read
 
 jobs:
   build:
-    name: Build (DEV)
+    name: 🐳 Build & Push (DEV → ECR)
     uses: YuriMarco94/pipeline-templates/.github/workflows/build-template-aws.yml@master
     with:
       environment: dev
@@ -24,7 +27,7 @@ jobs:
     secrets: inherit
 
   deploy:
-    name: Deploy (DEV)
+    name: ☸️ Deploy (DEV → EKS)
     needs: build
     uses: YuriMarco94/pipeline-templates/.github/workflows/deploy-template-eks.yml@master
     with:
