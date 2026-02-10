@@ -1,185 +1,234 @@
 🚀 AWS EKS Platform - Plataforma de Desenvolvimento em Kubernetes
+https://img.shields.io/badge/License-MIT-yellow.svg
+https://img.shields.io/badge/GitHub_Actions-2088FF?style=flat&logo=github-actions&logoColor=white
+https://img.shields.io/badge/AWS-FF9900?style=flat&logo=amazonaws&logoColor=white
+https://img.shields.io/badge/Kubernetes-326CE5?style=flat&logo=kubernetes&logoColor=white
+https://img.shields.io/badge/Terraform-7B42BC?style=flat&logo=terraform&logoColor=white
 
 📋 Visão Geral
-AWS EKS Platform é uma solução completa de infraestrutura como código (IaC) para provisionar e gerenciar clusters Kubernetes na AWS, projetada para ambientes de desenvolvimento, homologação e produção com governança, segurança e observabilidade integradas.
+AWS EKS Platform é uma solução completa de Infraestrutura como Código para provisionar e operar clusters Kubernetes na AWS com CI/CD automatizado, segurança nativa e observabilidade integrada.
+
+🔗 Links Importantes:
+- Repositório: https://github.com/YuriMarco94/Desenvolvimento-AWS
+- GitHub Pages: https://yurimarco94.github.io/Desenvolvimento-AWS/
+- GitHub Actions: https://github.com/YuriMarco94/Desenvolvimento-AWS/actions
 
 🏗️ Arquitetura da Plataforma
-graph TB
-    subgraph "Infraestrutura AWS"
-        VPC[VPC com 3 AZs]
-        EKS[Cluster EKS v1.35]
-        ALB[Application Load Balancer]
-        ECR[ECR Registry]
-        RDS[RDS PostgreSQL]
-    end
-    
-    subgraph "Kubernetes Platform"
-        GatewayAPI[Gateway API + Envoy]
-        Apps[Applications<br/>dev/hom/prod]
-        Monitoring[Monitoring Stack<br/>Prometheus/Grafana]
-        Dashboard[Kubernetes Dashboard]
-        Autoscaler[Cluster Autoscaler]
-    end
-    
-    subgraph "CI/CD Pipeline"
-        GitHub[GitHub Actions]
-        OIDC[AWS OIDC]
-        SecurityScan[Security Scanning]
-        Deploy[Deployment Automation]
-    end
-    
-    subgraph "Governança"
-        Terraform[Terraform Modules]
-        Policies[Security Policies]
-        Budgets[FinOps Budgets]
-        Tagging[Resource Tagging]
-    end
-    
-    VPC --> EKS
-    EKS --> GatewayAPI
-    EKS --> Apps
-    EKS --> Monitoring
-    EKS --> Dashboard
-    
-    GitHub --> OIDC --> EKS
-    GitHub --> SecurityScan --> ECR
-    GitHub --> Deploy --> Apps
-    
-    Terraform --> VPC
-    Terraform --> EKS
-    Terraform --> ALB
-    Policies --> EKS
-    Budgets --> VPC
-    Tagging --> ALL[All Resources]
-
-🎯 Funcionalidades Principais
-
-✅ Infraestrutura como Código
-- Módulos Terraform reutilizáveis (VPC, EKS, ECR, RDS)
-- Estados remotos com S3 + DynamoDB
-- Configuração multi-ambiente (dev/hom/prod)
-- Tags consistentes para FinOps    
-
-✅ Segurança Shift-Left
-- Integração OIDC com GitHub Actions (sem secrets estáticos)
-- Scanning de imagens com Trivy/Aquasec
-- SAST/SCA/DAST nos pipelines
-- Políticas de rede zero-trust
-- Secrets management com AWS Secrets Manager
-
-✅ Observabilidade Completa
-- Prometheus Stack com Grafana
-- Dashboard Kubernetes com RBAC
-- Logs centralizados com CloudWatch
-- Métricas customizadas para aplicações
-- Alertas com Prometheus Alertmanager
-
-✅ CI/CD Automatizado
-- Pipelines por ambiente (dev → hom → prod)
-- Deployment blue-green com Gateway API
-- Rollback automático em falhas
-- Gates de aprovação manuais para produção
-- Notificações no Slack/Teams
+┌─────────────────────────────────────────────────────────┐
+│                    INFRAESTRUTURA AWS                   │
+├─────────────────────────────────────────────────────────┤
+│  ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐     │
+│  │   VPC   │  │   EKS   │  │   ALB   │  │   ECR   │     │
+│  │  3 AZs  │  │  v1.35  │  │   L7    │  │ Registry│     │
+│  │ Private │  │ Managed │  │ Ingress │  │ Private │     │
+│  │ Subnets │  │ Control │  │ Gateway │  │ Images  │     │
+│  └────┬────┘  │  Plane  │  └────┬────┘  └────┬────┘     │
+│       │       └────┬────┘       │            │          │
+│       │            │            │            │          │
+└───────┼────────────┼────────────┼────────────┼──────────┘
+        │            │            │            │
+        ▼            ▼            ▼            ▼
+┌─────────────────────────────────────────────────────────┐
+│                KUBERNETES PLATFORM                      │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│  ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐     │
+│  │ Gateway │  │  Apps   │  │ Monitor │  │  Dash-  │     │
+│  │  API    │  │ dev/hom/│  │-ing     │  │  board  │     │
+│  │ + Envoy │  │  prod   │  │ Stack   │  │   UI    │     │
+│  └────┬────┘  └────┬────┘  └────┬────┘  └────┬────┘     │
+│       │            │            │            │          │
+│       ▼            ▼            ▼            ▼          │
+│  ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐     │
+│  │ HTTP/2  │  │ Echo    │  │ Metrics │  │ RBAC    │     │
+│  │ TLS 1.3 │  │ Server  │  │ Logs    │  │ Auth    │     │
+│  │ WAF     │  │ Demo    │  │ Traces  │  │ Audit   │     │
+│  └─────────┘  └─────────┘  └─────────┘  └─────────┘     │
+│                                                         │
+├─────────────────────────────────────────────────────────┤
+│              CI/CD AUTOMATION (GitHub)                  │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│   ┌─────────┐    ┌─────────┐    ┌─────────┐             │
+│   │  DEV    │    │  HOM    │    │  PROD   │             │
+│   │ Branch  │───▶│   PR    │───▶│  Merge │             │ 
+│   │  Auto   │    │ Review  │    │ Approve │             │
+│   │ Deploy  │    │  Gate   │    │ Manual  │             │
+│   └─────────┘    └─────────┘    └─────────┘             │
+│         │              │               │                │
+│         ▼              ▼               ▼                │
+│   ┌─────────┐    ┌─────────┐    ┌─────────┐             │
+│   │ Build   │    │Security │    │ Canary  │             │
+│   │ Test    │    │ Scan    │    │ Rollout │             │
+│   │ Deploy  │    │ QA      │    │ Monitor │             │
+│   └─────────┘    └─────────┘    └─────────┘             │
+│                                                         │
+├─────────────────────────────────────────────────────────┤
+│                 GOVERNANÇA & SEGURANÇA                  │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│  ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐     │
+│  │Terraform│  │  RBAC   │  │ Network │  │ Secrets │     │
+│  │ Modules │  │ Policies│  │ Policies│  │ Manager │     │
+│  └─────────┘  └─────────┘  └─────────┘  └─────────┘     │
+│                                                         │
+│  ┌─────────┐  ┌──────────┐  ┌───────────┐  ┌─────────┐  │
+│  │ Budgets │  │   Tags   │  │ Compliance│  │  OIDC   │  │
+│  │ Alerts  │  │Chargeback│  │ CIS       │  │ GitHub  │  │
+│  └─────────┘  └──────────┘  └───────────┘  └─────────┘  │
+└─────────────────────────────────────────────────────────┘
 
 📁 Estrutura do Projeto
 DESENVOLVIMENTO-AWS/
 ├── .github/workflows/              # Pipelines CI/CD
 │   ├── cd-dev.yaml                 # Deploy DEV automático
 │   ├── cd-hom.yaml                 # Deploy HOM com gates
-│   └── cd-prod.yaml               # Deploy PROD com aprovação
-├── k8s/                           # Manifests Kubernetes
-│   ├── addons/                    # Add-ons do cluster
+│   └── cd-prod.yaml                # Deploy PROD com aprovação
+├── k8s/                            # Manifests Kubernetes
+│   ├── addons/                     # Add-ons do cluster
 │   │   ├── aws-load-balancer-controller/
 │   │   ├── cluster-autoscaler/
 │   │   ├── kube-prometheus-stack/
 │   │   ├── kubernetes-dashboard/
 │   │   └── metrics-server/
-│   ├── apps/                      # Aplicações por ambiente
+│   ├── apps/                       # Aplicações por ambiente
 │   │   └── namespaces/
-│   │       ├── dev/               # Ambiente de desenvolvimento
-│   │       ├── hom/               # Ambiente de homologação
-│   │       └── prod/              # Ambiente de produção
-│   ├── gateway/                   # Gateway API configs
-│   ├── gateway-api/               # CRDs e recursos Gateway
-│   ├── platform/                  # Configurações da plataforma
-│   └── rbac/                      # Roles e RoleBindings
-└── terraform/                     # Infraestrutura como Código
-    ├── modules/                   # Módulos reutilizáveis
-    │   ├── eks/                   # Cluster EKS
-    │   ├── network/               # VPC e subnets
-    │   ├── ecr/                   # Container registry
-    │   ├── rds/                   # Banco de dados
-    │   └── security_baseline/     # Baseline de segurança
-    └── envs/                      # Configurações por ambiente
-        ├── dev/                   # Desenvolvimento
-        ├── hom/                   # Homologação
-        └── prod/                  # Produção
+│   │       ├── dev/                # Ambiente de desenvolvimento
+│   │       ├── hom/                # Ambiente de homologação
+│   │       └── prod/               # Ambiente de produção
+│   ├── gateway/                    # Gateway API configs
+│   ├── gateway-api/                # CRDs e recursos Gateway
+│   ├── platform/                   # Configurações da plataforma
+│   └── rbac/                       # Roles e RoleBindings
+└── terraform/                      # Infraestrutura como Código
+    ├── modules/                    # Módulos reutilizáveis
+    │   ├── eks/                    # Cluster EKS
+    │   ├── network/                # VPC e subnets
+    │   ├── ecr/                    # Container registry
+    │   ├── rds/                    # Banco de dados
+    │   └── security_baseline/      # Baseline de segurança
+    └── envs/                       # Configurações por ambiente
+        ├── dev/                    # Desenvolvimento
+        ├── hom/                    # Homologação
+        └── prod/                   # Produção
 
-🔄 Workflow de Desenvolvimento
+🔄 Workflow CI/CD
+Desenvolvimento (DEV) - Deploy Automático
+┌─────────┐       ┌─────────┐     ┌─────────┐       ┌─────────┐
+│ Commit  │────▶ │ GitHub  │────▶│ Build   │────▶ │  Deploy │
+│  to dev │      │ Actions │      │  Image  │       │ to EKS  │
+└─────────┘      └─────────┘      └─────────┘       └─────────┘
+     │               │               │               │
+     │               │               │               │
+     ▼               ▼               ▼               ▼
+   ┌─────────┐   ┌─────────┐   ┌─────────┐   ┌─────────┐
+   │  Code   │   │  OIDC   │   │  Push   │   │ Auto-   │
+   │ Review  │   │  Auth   │   │  ECR    │   │ Tests   │
+   └─────────┘   └─────────┘   └─────────┘   └─────────┘
 
-Desenvolvimento (DEV)
-graph LR
-    Dev[Commit na branch dev] --> GH[GitHub Actions]
-    GH --> Build[Build Docker Image]
-    Build --> Push[Push para ECR]
-    Push --> Deploy[Deploy para EKS DEV]
-    Deploy --> Test[Testes Automatizados]
 
-Homologação (HOM)
-graph LR
-    PR[Pull Request para hom] --> Review[Code Review]
-    Review --> Approval[Aprovação Manual]
-    Approval --> GH[GitHub Actions]
-    GH --> Deploy[Deploy para EKS HOM]
-    Deploy --> QA[Testes QA]
-    QA --> Approve[Aprovação para Prod]
 
-Produção (PROD)
-graph LR
-    Merge[Merge para main] --> GH[GitHub Actions]
-    GH --> Deploy[Deploy para EKS PROD]
-    Deploy --> Monitor[Monitoramento]
-    Monitor --> Rollback[Rollback Automático se falhar]
+Homologação (HOM) - Gates de Aprovação
+┌─────────┐     ┌─────────┐     ┌─────────┐       ┌─────────┐
+│   PR    │────▶│  Code   │────▶│ Manual  │────▶│ Deploy  │
+│  to hom │     │ Review  │     │ Approve │       │ to EKS  │
+└─────────┘     └─────────┘     └─────────┘       └─────────┘
+                       │                              │
+                       ▼                              ▼
+                ┌─────────┐                    ┌─────────┐
+                │Security │                    │   QA    │
+                │ Scans   │                    │  Tests  │
+                └─────────┘                    └─────────┘
 
-🛡️ Segurança
 
-Controles Implementados
-✅ Autenticação: OIDC com GitHub, IAM Roles for Service Accounts
-✅ Autorização: RBAC granular, Policies baseadas em namespaces
-✅ Rede: Security Groups, Network Policies, WAF no ALB
-✅ Secrets: AWS Secrets Manager, encriptação em repouso/trânsito
-✅ Compliance: CIS Benchmark, AWS Well-Architected Framework
+Produção (PROD) - Aprovação Manual + Monitoramento
+┌─────────┐     ┌─────────┐      ┌─────────┐       ┌─────────┐
+│ Merge   │────▶│ GitHub  │────▶│  Prod   │────▶ │ Deploy  │
+│ to main │     │ Actions │      │ Approve │       │ to EKS  │
+└─────────┘     └─────────┘      └─────────┘       └─────────┘
+                       │                              │
+                       ▼                              ▼
+                ┌─────────┐                    ┌─────────┐
+                │ Final   │                    │Monitor &│
+                │ Security│                    │Rollback │
+                │ Checks  │                    │  Logic  │
+                └─────────┘                    └─────────┘
 
-Security Scanning
-# Pipeline inclui automaticamente:
-- SAST: Semgrep, Bandit
-- SCA: Dependency scanning
-- DAST: ZAP Proxy
-- Container: Trivy para imagens
-- IaC: Checkov para Terraform
 
-💰 FinOps & Otimização de Custos
+🛡️ Security Framework
+┌─────────────────────────────────────────────────────────┐
+│                 SECURITY SHIFT-LEFT                     │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│  ┌─────────┐    ┌─────────┐    ┌─────────┐              │
+│  │   SAST  │    │   SCA   │    │   DAST  │              │
+│  │  Code   │    │  Deps   │    │ Runtime │              │
+│  │ Scanning│    │ Scanning│    │ Scanning│              │
+│  └─────────┘    └─────────┘    └─────────┘              │
+│         │              │               │                │
+│         ▼              ▼               ▼                │
+│  ┌─────────┐    ┌─────────┐    ┌─────────┐              │
+│  │ Semgrep │    │ Trivy   │    │  ZAP    │              │
+│  │ Bandit  │    │ Grype   │    │ Proxy   │              │
+│  │ SonarQube│   │ Snyk    │    │ Burp    │              │
+│  └─────────┘    └─────────┘    └─────────┘              │
+│                                                         │
+├─────────────────────────────────────────────────────────┤
+│              RUNTIME SECURITY & COMPLIANCE              │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│  ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐     │
+│  │ Network │  │  Pod    │  │ Secrets │  │  RBAC   │     │
+│  │Policies │  │Security │  │ Rotation│  │ Auditing│     │
+│  │ Calico  │  │ Podman  │  │ Vault   │  │  OPA    │     │
+│  └─────────┘  └─────────┘  └─────────┘  └─────────┘     │
+│                                                         │
+│  ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐     │
+│  │  CIS    │  │  SOC2   │  │  GDPR   │  │  HIPAA  │     │
+│  │Benchmark│  │  Type2  │  │  Ready  │  │  Ready  │     │
+│  └─────────┘  └─────────┘  └─────────┘  └─────────┘     │
+└─────────────────────────────────────────────────────────┘
 
-Estratégias Implementadas
-- -Cluster Autoscaler: Escala nodes baseado em demanda
-- Spot Instances: Até 70% de economia com nodes spot
-- Right-sizing: Resource requests/limits otimizados
-- Tagging: Tags consistentes para chargeback
-- Budgets: Alertas de custo no AWS Budgets
 
-Estimativa de Custos (DEV)
--Recurso	                        Custo Mensal
--EKS Control Plane	                $73.00
--EC2 Worker Nodes (3x t3.medium)	~$90.00
--ECR Storage	                    ~$5.00
--ALB	                            ~$20.00
---Total Estimado	                ~$188.00/mês
+📊 Aplicação Demo - Echo Server
+┌─────────────────────────────────────────────────────────┐
+│                  APLICAÇÃO POR AMBIENTE                 │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│  AMBIENTE   NAMESPACE  RÉPLICAS  ENDPOINT    PROTOCOLO  │
+│  ─────────────────────────────────────────────────────  │
+│                                                         │
+│    DEV        dev         2      /echo-dev     HTTP     │
+│              ┌────┐     ┌───┐   ┌────────┐   ┌─────┐    │
+│              │Test│     │🟢 │   │Fast    │   │Port │    │
+│              │Fast│     │ 🟢│   │Iterate │   │ 80  │    │
+│              └────┘     └───┘   └────────┘   └─────┘    │
+│                                                         │
+│    HOM        hom         2      /echo-hom     HTTP     │
+│              ┌────┐     ┌───┐   ┌────────┐   ┌─────┐    │
+│              │QA  │     │ 🟡│   │Staging │   │Port │    │
+│              │Gate│     │ 🟡│   │Preview │   │ 80  │    │
+│              └────┘     └───┘   └────────┘   └─────┘    │
+│                                                         │
+│    PROD       prod        3      /echo-prod    HTTPS    │
+│              ┌────┐     ┌───┐   ┌────────┐   ┌─────┐    │
+│              │Prod│     │ 🔴│   │Canary  │   │Port │    │
+│              │ SLA│     │ 🔴│   │Rollout │   │ 443 │    │
+│              └────┘     │ 🔴│   └────────┘   └─────┘    │
+│                         └───┘                           │
+└─────────────────────────────────────────────────────────┘
 
-📈 Monitoramento e Alertas
+Comandos para verificar:
+# Verificar todos os ambientes
+kubectl get pods -n dev
+kubectl get pods -n hom  
+kubectl get pods -n prod
 
-Dashboards Disponíveis
-- Cluster Overview: Saúde do cluster, uso de recursos
-- Node Metrics: CPU, memória, disco por node
-- Pod Metrics: Performance por pod/namespace
-- ALB Metrics: Requisições, latência, erros
-- Cost Dashboard: Gasto por namespace/time
+# Verificar serviços
+kubectl get svc -n dev echo
+kubectl get svc -n hom echo
+kubectl get svc -n prod echo
+
+# Verificar ingress
+kubectl get ingress -A | grep echo
+
