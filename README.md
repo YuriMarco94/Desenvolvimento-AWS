@@ -1,4 +1,5 @@
 AWS EKS Platform - Plataforma de Desenvolvimento em Kubernetes
+
 <img width="1911" height="678" alt="image" src="https://github.com/user-attachments/assets/e4aba8b2-36b1-4cf8-b846-cd800a1c6980" />
 
 
@@ -10,38 +11,10 @@ AWS EKS Platform é uma solução completa de Infraestrutura como Código para p
 - GitHub Pages: https://yurimarco94.github.io/Desenvolvimento-AWS/
 - GitHub Actions: https://github.com/YuriMarco94/Desenvolvimento-AWS/actions
 
-🏗️ Arquitetura da Plataforma
-┌─────────────────────────────────────────────────────────┐
-│                    INFRAESTRUTURA AWS                   │
-├─────────────────────────────────────────────────────────┤
-│  ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐     │
-│  │   VPC   │  │   EKS   │  │   ALB   │  │   ECR   │     │
-│  │  3 AZs  │  │  v1.35  │  │   L7    │  │ Registry│     │
-│  │ Private │  │ Managed │  │ Ingress │  │ Private │     │
-│  │ Subnets │  │ Control │  │ Gateway │  │ Images  │     │
-│  └────┬────┘  │  Plane  │  └────┬────┘  └────┬────┘     │
-│       │       └────┬────┘       │            │          │
-│       │            │            │            │          │
-└───────┼────────────┼────────────┼────────────┼──────────┘
-        │            │            │            │
-        ▼            ▼            ▼            ▼
-┌─────────────────────────────────────────────────────────┐
-│                KUBERNETES PLATFORM                      │
-├─────────────────────────────────────────────────────────┤
-│                                                         │
-│  ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐     │
-│  │ Gateway │  │  Apps   │  │ Monitor │  │  Dash-  │     │
-│  │  API    │  │ dev/hom/│  │-ing     │  │  board  │     │
-│  │ + Envoy │  │  prod   │  │ Stack   │  │   UI    │     │
-│  └────┬────┘  └────┬────┘  └────┬────┘  └────┬────┘     │
-│       │            │            │            │          │
-│       ▼            ▼            ▼            ▼          │
-│  ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐     │
-│  │ HTTP/2  │  │ Echo    │  │ Metrics │  │ RBAC    │     │
-│  │ TLS 1.3 │  │ Server  │  │ Logs    │  │ Auth    │     │
-│  │ WAF     │  │ Demo    │  │ Traces  │  │ Audit   │     │
-│  └─────────┘  └─────────┘  └─────────┘  └─────────┘     │
-│                                                         │
+<img width="502" height="382" alt="image" src="https://github.com/user-attachments/assets/e6785f29-80cd-4659-bfcd-c17380dc5adc" />
+
+<img width="489" height="435" alt="image" src="https://github.com/user-attachments/assets/671988e7-92de-4a51-896e-68bf23bf0d79" />
+
 ├─────────────────────────────────────────────────────────┤
 │              CI/CD AUTOMATION (GitHub)                  │
 ├─────────────────────────────────────────────────────────┤
@@ -231,5 +204,6 @@ kubectl get svc -n prod echo
 
 # Verificar ingress
 kubectl get ingress -A | grep echo
+
 
 
