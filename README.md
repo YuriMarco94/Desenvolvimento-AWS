@@ -1,19 +1,24 @@
-AWS EKS Platform - Plataforma de Desenvolvimento em Kubernetes
+# AWS EKS Platform - Plataforma de Desenvolvimento em Kubernetes
 
-Este projeto foi criado como um projeto demonstrativo para a vaga de DevOps no Grupo Boticário. O objetivo é apresentar minhas habilidades
+Este projeto foi criado como um projeto demonstrativo para a vaga de DevOps no Grupo Boticário. O objetivo é apresentar minhas habilidades.
 
+---
 
 
 <img width="1911" height="678" alt="image" src="https://github.com/user-attachments/assets/e4aba8b2-36b1-4cf8-b846-cd800a1c6980" />
 
 
-📋 Visão Geral
+## 📋 **Visão Geral**
 
 AWS EKS Platform é uma solução completa de Infraestrutura como Código para provisionar e operar clusters Kubernetes na AWS com CI/CD automatizado, segurança nativa e observabilidade integrada.
 
-🔗 Links Importantes:
-- Repositório: https://github.com/YuriMarco94/Desenvolvimento-AWS
-- GitHub Actions: https://github.com/YuriMarco94/Desenvolvimento-AWS/actions
+---
+
+#### 🔗 **Links Importantes:**
+- **Repositório:** https://github.com/YuriMarco94/Desenvolvimento-AWS
+- **GitHub Actions:** https://github.com/YuriMarco94/Desenvolvimento-AWS/actions
+
+---
 
 <img width="502" height="382" alt="image" src="https://github.com/user-attachments/assets/e6785f29-80cd-4659-bfcd-c17380dc5adc" />
 
@@ -41,3 +46,4 @@ AWS EKS Platform é uma solução completa de Infraestrutura como Código para p
 
 
 <img width="400" height="546" alt="image" src="https://github.com/user-attachments/assets/d1d13ee6-133b-49c0-b5cf-a6f99eb0ac68" />
+
