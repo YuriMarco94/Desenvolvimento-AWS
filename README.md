@@ -1,9 +1,6 @@
-🚀 AWS EKS Platform - Plataforma de Desenvolvimento em Kubernetes
-https://img.shields.io/badge/License-MIT-yellow.svg
-https://img.shields.io/badge/GitHub_Actions-2088FF?style=flat&logo=github-actions&logoColor=white
-https://img.shields.io/badge/AWS-FF9900?style=flat&logo=amazonaws&logoColor=white
-https://img.shields.io/badge/Kubernetes-326CE5?style=flat&logo=kubernetes&logoColor=white
-https://img.shields.io/badge/Terraform-7B42BC?style=flat&logo=terraform&logoColor=white
+AWS EKS Platform - Plataforma de Desenvolvimento em Kubernetes
+<img width="1911" height="678" alt="image" src="https://github.com/user-attachments/assets/e4aba8b2-36b1-4cf8-b846-cd800a1c6980" />
+
 
 📋 Visão Geral
 AWS EKS Platform é uma solução completa de Infraestrutura como Código para provisionar e operar clusters Kubernetes na AWS com CI/CD automatizado, segurança nativa e observabilidade integrada.
@@ -141,6 +138,7 @@ Homologação (HOM) - Gates de Aprovação
                 └─────────┘                    └─────────┘
 
 
+
 Produção (PROD) - Aprovação Manual + Monitoramento
 ┌─────────┐     ┌─────────┐      ┌─────────┐       ┌─────────┐
 │ Merge   │────▶│ GitHub  │────▶│  Prod   │────▶ │ Deploy  │
@@ -153,6 +151,7 @@ Produção (PROD) - Aprovação Manual + Monitoramento
                 │ Security│                    │Rollback │
                 │ Checks  │                    │  Logic  │
                 └─────────┘                    └─────────┘
+
 
 
 🛡️ Security Framework
@@ -188,6 +187,7 @@ Produção (PROD) - Aprovação Manual + Monitoramento
 │  │Benchmark│  │  Type2  │  │  Ready  │  │  Ready  │     │
 │  └─────────┘  └─────────┘  └─────────┘  └─────────┘     │
 └─────────────────────────────────────────────────────────┘
+
 
 
 📊 Aplicação Demo - Echo Server
@@ -231,4 +231,5 @@ kubectl get svc -n prod echo
 
 # Verificar ingress
 kubectl get ingress -A | grep echo
+
 
