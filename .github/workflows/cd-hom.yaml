@@ -19,7 +19,7 @@ jobs:
 
   deploy:
     needs: [build]
-    uses: SEU_ORG/pipeline-templates/.github/workflows/deploy-template-eks.yml@main
+    uses: SEU_ORG/pipeline-templates/.github/workflows/deploy-template-eks.yml@master
     secrets: inherit
     with:
       aws-region: us-east-1
