@@ -1,9 +1,7 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: dev
+  name: prod
   labels:
-    name: dev
     environment: development
     managed-by: terraform
-    owner: platform-team

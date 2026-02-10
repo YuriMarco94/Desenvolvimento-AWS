@@ -1,0 +1,31 @@
+name: CD - HOM
+
+on:
+  push:
+    branches: ["homol"]
+
+jobs:
+  build:
+    uses: YuriMarco94/pipeline-templates/.github/workflows/build-template-aws.yml@master
+    secrets: inherit
+    with:
+      build-id: ${{ github.run_id }}
+      environment: hom
+      namespace: hom
+      project: app
+      registry: 597088058179.dkr.ecr.us-east-1.amazonaws.com
+      aws-region: us-east-1
+      dockerfile-path: Dockerfile
+      context: .
+      version-prefix: "1.0"
+
+  deploy:
+    needs: build
+    uses: YuriMarco94/pipeline-templates/.github/workflows/deploy-template-eks.yml@master
+    secrets: inherit
+    with:
+      environment: hom
+      namespace: hom
+      aws-region: us-east-1
+      eks-cluster-name: yurim-aws-platform-dev-us-east-1-eks
+      manifest-path: k8s/apps/hom

@@ -1,0 +1,31 @@
+name: CD - PROD
+
+on:
+  push:
+    branches: ["prod"]
+
+jobs:
+  build:
+    uses: YuriMarco94/pipeline-templates/.github/workflows/build-template-aws.yml@master
+    secrets: inherit
+    with:
+      build-id: ${{ github.run_id }}
+      environment: prod
+      namespace: prod
+      project: app
+      registry: 597088058179.dkr.ecr.us-east-1.amazonaws.com
+      aws-region: us-east-1
+      dockerfile-path: Dockerfile
+      context: .
+      version-prefix: "1.0"
+
+  deploy:
+    needs: build
+    uses: YuriMarco94/pipeline-templates/.github/workflows/deploy-template-eks.yml@master
+    secrets: inherit
+    with:
+      environment: prod
+      namespace: prod
+      aws-region: us-east-1
+      eks-cluster-name: yurim-aws-platform-dev-us-east-1-eks
+      manifest-path: k8s/apps/prod
