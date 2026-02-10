@@ -15,181 +15,24 @@ AWS EKS Platform é uma solução completa de Infraestrutura como Código para p
 
 <img width="489" height="435" alt="image" src="https://github.com/user-attachments/assets/671988e7-92de-4a51-896e-68bf23bf0d79" />
 
-├─────────────────────────────────────────────────────────┤
-│              CI/CD AUTOMATION (GitHub)                  │
-├─────────────────────────────────────────────────────────┤
-│                                                         │
-│   ┌─────────┐    ┌─────────┐    ┌─────────┐             │
-│   │  DEV    │    │  HOM    │    │  PROD   │             │
-│   │ Branch  │───▶│   PR    │───▶│  Merge │             │ 
-│   │  Auto   │    │ Review  │    │ Approve │             │
-│   │ Deploy  │    │  Gate   │    │ Manual  │             │
-│   └─────────┘    └─────────┘    └─────────┘             │
-│         │              │               │                │
-│         ▼              ▼               ▼                │
-│   ┌─────────┐    ┌─────────┐    ┌─────────┐             │
-│   │ Build   │    │Security │    │ Canary  │             │
-│   │ Test    │    │ Scan    │    │ Rollout │             │
-│   │ Deploy  │    │ QA      │    │ Monitor │             │
-│   └─────────┘    └─────────┘    └─────────┘             │
-│                                                         │
-├─────────────────────────────────────────────────────────┤
-│                 GOVERNANÇA & SEGURANÇA                  │
-├─────────────────────────────────────────────────────────┤
-│                                                         │
-│  ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐     │
-│  │Terraform│  │  RBAC   │  │ Network │  │ Secrets │     │
-│  │ Modules │  │ Policies│  │ Policies│  │ Manager │     │
-│  └─────────┘  └─────────┘  └─────────┘  └─────────┘     │
-│                                                         │
-│  ┌─────────┐  ┌──────────┐  ┌───────────┐  ┌─────────┐  │
-│  │ Budgets │  │   Tags   │  │ Compliance│  │  OIDC   │  │
-│  │ Alerts  │  │Chargeback│  │ CIS       │  │ GitHub  │  │
-│  └─────────┘  └──────────┘  └───────────┘  └─────────┘  │
-└─────────────────────────────────────────────────────────┘
+<img width="489" height="449" alt="image" src="https://github.com/user-attachments/assets/d2ce5901-cf04-4c42-8ac3-35f09a28a8fe" />
 
-📁 Estrutura do Projeto
-DESENVOLVIMENTO-AWS/
-├── .github/workflows/              # Pipelines CI/CD
-│   ├── cd-dev.yaml                 # Deploy DEV automático
-│   ├── cd-hom.yaml                 # Deploy HOM com gates
-│   └── cd-prod.yaml                # Deploy PROD com aprovação
-├── k8s/                            # Manifests Kubernetes
-│   ├── addons/                     # Add-ons do cluster
-│   │   ├── aws-load-balancer-controller/
-│   │   ├── cluster-autoscaler/
-│   │   ├── kube-prometheus-stack/
-│   │   ├── kubernetes-dashboard/
-│   │   └── metrics-server/
-│   ├── apps/                       # Aplicações por ambiente
-│   │   └── namespaces/
-│   │       ├── dev/                # Ambiente de desenvolvimento
-│   │       ├── hom/                # Ambiente de homologação
-│   │       └── prod/               # Ambiente de produção
-│   ├── gateway/                    # Gateway API configs
-│   ├── gateway-api/                # CRDs e recursos Gateway
-│   ├── platform/                   # Configurações da plataforma
-│   └── rbac/                       # Roles e RoleBindings
-└── terraform/                      # Infraestrutura como Código
-    ├── modules/                    # Módulos reutilizáveis
-    │   ├── eks/                    # Cluster EKS
-    │   ├── network/                # VPC e subnets
-    │   ├── ecr/                    # Container registry
-    │   ├── rds/                    # Banco de dados
-    │   └── security_baseline/      # Baseline de segurança
-    └── envs/                       # Configurações por ambiente
-        ├── dev/                    # Desenvolvimento
-        ├── hom/                    # Homologação
-        └── prod/                   # Produção
+<img width="490" height="348" alt="image" src="https://github.com/user-attachments/assets/872abf07-465a-426b-a8de-24b290372393" />
 
-🔄 Workflow CI/CD
-Desenvolvimento (DEV) - Deploy Automático
-┌─────────┐       ┌─────────┐     ┌─────────┐       ┌─────────┐
-│ Commit  │────▶ │ GitHub  │────▶│ Build   │────▶ │  Deploy │
-│  to dev │      │ Actions │      │  Image  │       │ to EKS  │
-└─────────┘      └─────────┘      └─────────┘       └─────────┘
-     │               │               │               │
-     │               │               │               │
-     ▼               ▼               ▼               ▼
-   ┌─────────┐   ┌─────────┐   ┌─────────┐   ┌─────────┐
-   │  Code   │   │  OIDC   │   │  Push   │   │ Auto-   │
-   │ Review  │   │  Auth   │   │  ECR    │   │ Tests   │
-   └─────────┘   └─────────┘   └─────────┘   └─────────┘
+<img width="366" height="555" alt="image" src="https://github.com/user-attachments/assets/49751a09-f928-4b48-96ee-5d4f488fe8c6" />
 
+<img width="533" height="332" alt="image" src="https://github.com/user-attachments/assets/b77f8731-72e0-412c-a1e9-0372ca5e148e" />
 
+<img width="515" height="282" alt="image" src="https://github.com/user-attachments/assets/dc86b68d-8921-4538-b8ea-af37ae9cd619" />
 
-Homologação (HOM) - Gates de Aprovação
-┌─────────┐     ┌─────────┐     ┌─────────┐       ┌─────────┐
-│   PR    │────▶│  Code   │────▶│ Manual  │────▶│ Deploy  │
-│  to hom │     │ Review  │     │ Approve │       │ to EKS  │
-└─────────┘     └─────────┘     └─────────┘       └─────────┘
-                       │                              │
-                       ▼                              ▼
-                ┌─────────┐                    ┌─────────┐
-                │Security │                    │   QA    │
-                │ Scans   │                    │  Tests  │
-                └─────────┘                    └─────────┘
+<img width="521" height="308" alt="image" src="https://github.com/user-attachments/assets/26b0b4ad-02a7-4b24-838d-06a5da5c9a66" />
 
+<img width="492" height="453" alt="image" src="https://github.com/user-attachments/assets/1a9de7f7-0c38-4005-abca-62ee34fb8682" />
 
+<img width="496" height="376" alt="image" src="https://github.com/user-attachments/assets/bd0aa7a3-99e6-4a47-b133-d3f9f123fca2" />
 
-Produção (PROD) - Aprovação Manual + Monitoramento
-┌─────────┐     ┌─────────┐      ┌─────────┐       ┌─────────┐
-│ Merge   │────▶│ GitHub  │────▶│  Prod   │────▶ │ Deploy  │
-│ to main │     │ Actions │      │ Approve │       │ to EKS  │
-└─────────┘     └─────────┘      └─────────┘       └─────────┘
-                       │                              │
-                       ▼                              ▼
-                ┌─────────┐                    ┌─────────┐
-                │ Final   │                    │Monitor &│
-                │ Security│                    │Rollback │
-                │ Checks  │                    │  Logic  │
-                └─────────┘                    └─────────┘
+<img width="400" height="546" alt="image" src="https://github.com/user-attachments/assets/d1d13ee6-133b-49c0-b5cf-a6f99eb0ac68" />
 
-
-
-🛡️ Security Framework
-┌─────────────────────────────────────────────────────────┐
-│                 SECURITY SHIFT-LEFT                     │
-├─────────────────────────────────────────────────────────┤
-│                                                         │
-│  ┌─────────┐    ┌─────────┐    ┌─────────┐              │
-│  │   SAST  │    │   SCA   │    │   DAST  │              │
-│  │  Code   │    │  Deps   │    │ Runtime │              │
-│  │ Scanning│    │ Scanning│    │ Scanning│              │
-│  └─────────┘    └─────────┘    └─────────┘              │
-│         │              │               │                │
-│         ▼              ▼               ▼                │
-│  ┌─────────┐    ┌─────────┐    ┌─────────┐              │
-│  │ Semgrep │    │ Trivy   │    │  ZAP    │              │
-│  │ Bandit  │    │ Grype   │    │ Proxy   │              │
-│  │ SonarQube│   │ Snyk    │    │ Burp    │              │
-│  └─────────┘    └─────────┘    └─────────┘              │
-│                                                         │
-├─────────────────────────────────────────────────────────┤
-│              RUNTIME SECURITY & COMPLIANCE              │
-├─────────────────────────────────────────────────────────┤
-│                                                         │
-│  ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐     │
-│  │ Network │  │  Pod    │  │ Secrets │  │  RBAC   │     │
-│  │Policies │  │Security │  │ Rotation│  │ Auditing│     │
-│  │ Calico  │  │ Podman  │  │ Vault   │  │  OPA    │     │
-│  └─────────┘  └─────────┘  └─────────┘  └─────────┘     │
-│                                                         │
-│  ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐     │
-│  │  CIS    │  │  SOC2   │  │  GDPR   │  │  HIPAA  │     │
-│  │Benchmark│  │  Type2  │  │  Ready  │  │  Ready  │     │
-│  └─────────┘  └─────────┘  └─────────┘  └─────────┘     │
-└─────────────────────────────────────────────────────────┘
-
-
-
-📊 Aplicação Demo - Echo Server
-┌─────────────────────────────────────────────────────────┐
-│                  APLICAÇÃO POR AMBIENTE                 │
-├─────────────────────────────────────────────────────────┤
-│                                                         │
-│  AMBIENTE   NAMESPACE  RÉPLICAS  ENDPOINT    PROTOCOLO  │
-│  ─────────────────────────────────────────────────────  │
-│                                                         │
-│    DEV        dev         2      /echo-dev     HTTP     │
-│              ┌────┐     ┌───┐   ┌────────┐   ┌─────┐    │
-│              │Test│     │🟢 │   │Fast    │   │Port │    │
-│              │Fast│     │ 🟢│   │Iterate │   │ 80  │    │
-│              └────┘     └───┘   └────────┘   └─────┘    │
-│                                                         │
-│    HOM        hom         2      /echo-hom     HTTP     │
-│              ┌────┐     ┌───┐   ┌────────┐   ┌─────┐    │
-│              │QA  │     │ 🟡│   │Staging │   │Port │    │
-│              │Gate│     │ 🟡│   │Preview │   │ 80  │    │
-│              └────┘     └───┘   └────────┘   └─────┘    │
-│                                                         │
-│    PROD       prod        3      /echo-prod    HTTPS    │
-│              ┌────┐     ┌───┐   ┌────────┐   ┌─────┐    │
-│              │Prod│     │ 🔴│   │Canary  │   │Port │    │
-│              │ SLA│     │ 🔴│   │Rollout │   │ 443 │    │
-│              └────┘     │ 🔴│   └────────┘   └─────┘    │
-│                         └───┘                           │
-└─────────────────────────────────────────────────────────┘
 
 Comandos para verificar:
 # Verificar todos os ambientes
@@ -204,6 +47,7 @@ kubectl get svc -n prod echo
 
 # Verificar ingress
 kubectl get ingress -A | grep echo
+
 
 
 
